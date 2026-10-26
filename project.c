@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
 typedef struct date
 {
@@ -56,7 +57,7 @@ int search (node_patient *head,patient x){
     temp = head;
     while (temp != NULL)
     {
-        if(temp->info.firstname == x.firstname && temp->info.lastname == x.lastname){
+        if(strcmp(temp->info.firstname, x.firstname) == 0 && strcmp(temp->info.lastname, x.lastname)){
             return 1;
         }
         temp = temp->next;
@@ -81,8 +82,9 @@ node_patient *delete(node_patient *head,int x){
     node_patient *prev,*curr;
     prev = NULL; curr = head;
     if(curr->info.id == x){
+        head = curr->next;
         free(curr);
-        return curr->next;
+        return head;
     }
     while (curr != NULL)
     {
