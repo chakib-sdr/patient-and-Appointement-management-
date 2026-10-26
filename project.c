@@ -81,6 +81,10 @@ node_patient *modify(node_patient *head,int x){
 node_patient *delete(node_patient *head,int x){
     node_patient *prev,*curr;
     prev = NULL; curr = head;
+    if (curr == NULL) {
+        printf("the patient does not exist\n");
+        return head;
+    }
     if(curr->info.id == x){
         head = curr->next;
         free(curr);
@@ -96,7 +100,6 @@ node_patient *delete(node_patient *head,int x){
     prev = curr;
     curr = curr->next;
     }
-    printf("patient not found\n");
     return head;
 
 }
@@ -171,7 +174,9 @@ int main(){
             nextid++;
 
             head = ADD(head, newpatient);
-            printf("Patient Added successfully\n\n\n");
+    printf("======================================\n");
+            printf("Patient Added successfully\n");
+    printf("======================================\n");
 
             
         }
@@ -186,9 +191,13 @@ int main(){
         scanf("%s",temp.lastname);
         
         if(search(head,temp)){
+    printf("======================================\n");
             printf("patient Found\n");
+    printf("======================================\n");
     }else{
+    printf("======================================\n");
         printf("This patient does not exist\n");
+    printf("======================================\n");
     }
     printf("What do you want to do\n 0-exit\n 1-Add a patient\n 2-Search for a patient\n 3-Modify a patient\n 4-Delete patient\n 5-list all patient\n\n");
     scanf("%d",&choice);
@@ -216,11 +225,15 @@ int main(){
             if(c == 1){
                 printf("Enter the new First_name\n");
                 scanf("%s", temp->info.firstname);
+                printf("======================================\n");
                 printf("First name modified\n");
+                printf("======================================\n");
             }else if( c == 2){
                 printf("Enter the new Last_name\n");
                 scanf("%s",temp->info.lastname);
+                printf("======================================\n");
                 printf("Last name modified\n");
+                printf("======================================\n");
             }else if (c == 3){
                 printf("Enter the new date");
             scanf("%d",& temp->info.birth.year);
@@ -233,7 +246,9 @@ int main(){
             scanf("%d",&temp->info.birth.month);
             scanf("%d",&temp->info.birth.day);
             }
+            printf("======================================\n");
             printf("Date of birth modified\n");
+            printf("======================================\n");
             }else{
             scanf(" %c",&temp->info.gender);
             temp->info.gender = toupper(temp->info.gender);
@@ -242,7 +257,10 @@ int main(){
                 printf("choose a valid option\n");
             scanf(" %c",&temp->info.gender);
             temp->info.gender = toupper(temp->info.gender);
-            }               
+            }
+            printf("======================================\n");
+            printf("Gender modified\n");
+            printf("======================================\n");               
             }
         }
 
@@ -252,17 +270,27 @@ int main(){
         printf("The id of the patient you want to delete\n");
         scanf("%d",&id);
         printf("\n");
-        head = delete(head,id);
-        printf("paitent deleted successfully\n");
+        if (modify(head, id) != NULL) { /*since modify function check if the patient exist and return it*/
+        head = delete(head, id);
+    printf("======================================\n");     
+        printf("Patient deleted successfully\n");
+    printf("======================================\n\n");
+        } else {
+    printf("======================================\n");
+    printf("Patient not found");
+    printf("======================================\n\n");
+    }
+
     }else{
         node_patient *temp;
         temp = head;
+        printf("\n========== LIST OF PATIENTS ==========\n\n");
     while (temp != NULL)
     {
         printf("ID:%d\nFirst name: %s\nLast name: %s\nDate of birth: %d %d %d \nGender:%c\n\n",temp->info.id, temp->info.firstname, temp->info.lastname, temp->info.birth.year , temp->info.birth.month , temp->info.birth.day, temp->info.gender);
         temp = temp->next;
     }
-    
+    printf("======================================\n\n");
     }
 
     printf("What do you want to do\n 0-exit\n 1-Add a patient\n 2-Search for a patient\n 3-Modify a patient\n 4-Delete patient\n 5-list all patient\n\n");
