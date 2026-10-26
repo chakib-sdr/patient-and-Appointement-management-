@@ -34,6 +34,13 @@ typedef struct node_patient
 }node_patient;
 
 
+typedef struct appointment {
+    int id;
+    int patient_id;
+    date appointment_date;
+    time appointment_time;
+} appointment;
+
 
 node_patient *ADD(node_patient *head, node_patient *newpatient){
     node_patient *tail;
