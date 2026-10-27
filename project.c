@@ -185,6 +185,26 @@ node_appointement *delete_appointement(node_appointement *head,int x){
 }
 
 
+int check_appointement(node_appointement *head, appointment a){
+    node_appointement *temp;
+    temp = head;
+    while (temp != NULL)
+    {
+        if (temp->info.appointment_date.year  == a.appointment_date.year  &&
+            temp->info.appointment_date.month == a.appointment_date.month &&
+            temp->info.appointment_date.day   == a.appointment_date.day   &&
+            temp->info.appointment_time.hour  == a.appointment_time.hour  &&
+            temp->info.appointment_time.min   == a.appointment_time.min){
+            return 1;
+            }
+    
+}
+    return 0;
+    }
+
+
+
+
 int main(){
     printf("Title of The Project: Patient and Appointment Management\n");
     printf("Group number: 10\n");
@@ -257,14 +277,18 @@ while (choice_management != 0)
             scanf("%d",&newpatient->info.birth.month);
             scanf("%d",&newpatient->info.birth.day);
             printf("\n");
-            while ((newpatient->info.birth.year<1900 || newpatient->info.birth.year > 2026) || (newpatient->info.birth.month<0 || newpatient->info.birth.month>12) || (newpatient->info.birth.day<0 || newpatient->info.birth.day>31)){
+            while ((newpatient->info.birth.year<1900 || newpatient->info.birth.year > 2026) || (newpatient->info.birth.month<1 || newpatient->info.birth.month>12) || (newpatient->info.birth.day<1 ||newpatient->info.birth.day>31)){
             printf("Enter a valid Date\n");
             scanf("%d",& newpatient->info.birth.year);
             scanf("%d",&newpatient->info.birth.month);
             scanf("%d",&newpatient->info.birth.day);
             printf("\n");
             }
-
+            if (search_patient(head, newpatient->info)) {
+            printf("This patient already exists\n");
+            free(newpatient);
+            continue;
+            }
             newpatient->info.id = nextid;
             nextid++;
 
@@ -389,6 +413,12 @@ while (choice_management != 0)
 
     printf("What do you want to do\n 0-exit\n 1-Add a patient\n 2-Search for a patient\n 3-Modify a patient\n 4-Delete patient\n 5-list all patient\n\n");
     scanf("%d",&choice);
+    while (choice<0 || choice >5)
+    {
+        printf("Enter a valid option\n");
+        scanf("%d",&choice);
+    }
+    
     }
 
 
@@ -429,6 +459,7 @@ while (choice_management != 0)
             if (newappointement->info.patient_id == 0)
             {
                 printf("Appointement canceled\n");
+                free(newappointement);
                 break;
             }
             
@@ -461,6 +492,11 @@ while (choice_management != 0)
             printf("\n");
             }
 
+            if (check_appointement(head1, newappointement->info)) {
+                printf("This time slot is already booked\n");
+                free(newappointement);
+                continue;
+                }
             newappointement->info.id = nextid_appointement;
             nextid_appointement++;
 
@@ -577,7 +613,12 @@ while (choice_management != 0)
 
     printf("What do you want to do\n 0-exit\n 1-Add an appointment\n 2-Search for an appointement\n 3-Modify an appointement\n 4-Delete an appointement\n 5-list all appointement\n\n");
     scanf("%d",&choice);
-
+    while (choice<0 || choice>5)
+    {
+        printf("Enter a valid option\n");
+        scanf("%d",&choice);
+    }
+    
         }
 
 
