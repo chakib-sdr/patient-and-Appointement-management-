@@ -569,7 +569,7 @@ while (choice_management != 0)
         printf("\n========== LIST OF Appointements ==========\n\n");
     while (temp != NULL)
     {
-        printf("ID:%d\nPatient_id:%d\nDate of the appointement: %d %d %d \nTime:%d %d\n\n",temp->info.id, temp->info.patient_id, temp->info.appointment_date.year , temp->info.appointment_date.month , temp->info.appointment_date.day, temp->info.appointment_time.hour,temp->info.appointment_time.min);
+        printf("ID:%d\nPatient_id:%d\nDate of the appointement: %d %d %d \nTime:%d : %d\n\n",temp->info.id, temp->info.patient_id, temp->info.appointment_date.year , temp->info.appointment_date.month , temp->info.appointment_date.day, temp->info.appointment_time.hour,temp->info.appointment_time.min);
         temp = temp->next;
     }
     printf("======================================\n\n");
