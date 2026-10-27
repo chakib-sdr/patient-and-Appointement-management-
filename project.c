@@ -197,6 +197,7 @@ int check_appointement(node_appointement *head, appointment a){
             temp->info.appointment_time.min   == a.appointment_time.min){
             return 1;
             }
+    temp = temp->next;
     
 }
     return 0;
@@ -390,6 +391,14 @@ while (choice_management != 0)
         printf("\n");
         if (modify_patient(head, id) != NULL) { /*since modify function check if the patient exist and return it*/
         head = delete_patient(head, id);
+        /*After deleting a patient its appointement should be deleted*/
+        node_appointement *temp = head1;
+        while (temp != NULL) {
+            node_appointement *next = temp->next;
+            if (temp->info.patient_id == id)
+            head1 = delete_appointement(head1, temp->info.id);
+            temp = next;
+    }
     printf("======================================\n");     
         printf("Patient deleted successfully\n");
     printf("======================================\n\n");
