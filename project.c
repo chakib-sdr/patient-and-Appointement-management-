@@ -209,7 +209,7 @@ int check_appointement(node_appointement *head, appointment a){
 int main(){
     printf("Title of The Project: Patient and Appointment Management\n");
     printf("Group number: 10\n");
-    printf("Made by:\n\n\n");
+    printf("Made by: Chakib Saddar\n\n");
 
 
 
