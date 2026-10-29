@@ -569,7 +569,7 @@ while (choice_management != 0)
     printf("======================================\n\n");
         } else {
     printf("======================================\n");
-    printf("Patient not found");
+    printf("Patient not found\n");
     printf("======================================\n\n");
     }
 
@@ -864,6 +864,14 @@ while (choice_management != 0)
         scanf("%d",&d.year);
         scanf("%d",&d.month);
         scanf("%d",&d.day);
+        while (d.year<2026 || (d.month<1 || d.month>12) || (d.day<1 || d.day>31))
+        {
+            printf("Enter a Valid date\n");
+        scanf("%d",&d.year);
+        scanf("%d",&d.month);
+        scanf("%d",&d.day);
+        }
+        
         a.id = 0;
         a.appointment_date = d;
         printf("\nAvailable time slots on %d %d %d :\n", d.year, d.month, d.day);
