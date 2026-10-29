@@ -480,7 +480,9 @@ while (choice_management != 0)
         printf("The id of the patient you want to modify\n");
         scanf("%d",&id);
         if(modify_patient(head,id) == NULL){
+            printf("======================================\n");  
             printf("patient not found\n");
+            printf("======================================\n");
         }else{
             temp = modify_patient(head,id);
             printf("What do you want to modify\n 1-First_name\n 2-Last_name\n 3-Date of birth\n 4-gender\n 5-phone number\n");
