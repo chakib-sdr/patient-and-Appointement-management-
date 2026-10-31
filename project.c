@@ -172,12 +172,12 @@ int search_appointement(node_appointement *head, date d) {
     for (i = 0; i < count - 1; i++) {
         for (j = 0; j < count - 1 - i; j++) {
             int time1 = arr[j]->info.appointment_time.hour * 60 + arr[j]->info.appointment_time.min;
-            int time2 = arr[j + 1]->info.appointment_time.hour * 60 + arr[j + 1]->info.appointment_time.min;
+            int time2 = arr[j+1]->info.appointment_time.hour * 60 + arr[j+1]->info.appointment_time.min;
 
             if (time1 > time2) {
                 node_appointement *swap = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = swap;
+                arr[j] = arr[j+1];
+                arr[j+1] = swap;
             }
         }
     }
@@ -265,7 +265,6 @@ void sort_appointments(node_appointement *head1, int id)
 {
     node_appointement *temp = head1;
     int count = 0;
-
     while (temp != NULL)
     {
         if (temp->info.patient_id == id)
@@ -273,7 +272,6 @@ void sort_appointments(node_appointement *head1, int id)
 
         temp = temp->next;
     }
-
     if (count == 0)
     {
         printf("This patient has no appointment\n");
@@ -281,7 +279,6 @@ void sort_appointments(node_appointement *head1, int id)
     }
 
     node_appointement *arr[count];
-
     temp = head1;
     int i = 0;
     int j;
@@ -292,30 +289,28 @@ void sort_appointments(node_appointement *head1, int id)
             arr[i] = temp;
             i++;
         }
-
         temp = temp->next;
+    }
     for (i = 0; i < count - 1; i++)
     {
-        for (j = 0; j < count - 1 - i; j++)
+        for (j = 0; j < count - 1; j++)
         {
             /*we multiply so its easy to compare ex (2026.1.5) will be 202615*/
             int date1 = arr[j]->info.appointment_date.year * 10000 + arr[j]->info.appointment_date.month * 100 + arr[j]->info.appointment_date.day;
-
-            int date2 = arr[j + 1]->info.appointment_date.year * 10000 + arr[j + 1]->info.appointment_date.month * 100 + arr[j + 1]->info.appointment_date.day;
-
+            int date2 = arr[j+1]->info.appointment_date.year * 10000 + arr[j+1]->info.appointment_date.month * 100 + arr[j+1]->info.appointment_date.day;
             int time1 = arr[j]->info.appointment_time.hour * 60 + arr[j]->info.appointment_time.min;
 
-            int time2 = arr[j + 1]->info.appointment_time.hour * 60 + arr[j + 1]->info.appointment_time.min;
+            int time2 = arr[j+1]->info.appointment_time.hour * 60 + arr[j+1]->info.appointment_time.min;
             if (date1 > date2 || (date1 == date2 && time1 > time2))
             {
                 temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
             }
         }
     }
 }
-}
+
 
 
 int main(){
@@ -846,10 +841,13 @@ while (choice_management != 0)
             printf("\n========== APPOINTEMENTS OF THE PATIENT ==========\n\n");
             while (temp != NULL)
             {
+                if(temp->info.patient_id == id){
                     printf("ID: %d\n", temp->info.id);
                     printf("Date: %d/%d/%d\n",temp->info.appointment_date.day,temp->info.appointment_date.month,temp->info.appointment_date.year);
                     printf("Time: %02d:%02d\n",temp->info.appointment_time.hour,temp->info.appointment_time.min);
                     printf("Reason: %s\n\n", temp->info.reason);
+                }
+
                 temp = temp->next;
             }
             
@@ -913,9 +911,14 @@ while (choice_management != 0)
         date d;
 
         temp = head;
-        while (temp != NULL) { nb_patients++; temp = temp->next; }
+        while (temp != NULL) {
+            nb_patients++; 
+            temp = temp->next; }
+        
         temp1 = head1;
-        while (temp1 != NULL) { nb_appointements++; temp1 = temp1->next; }
+        while (temp1 != NULL) { 
+            nb_appointements++; 
+            temp1 = temp1->next; }
 
         printf("The Date for the statistics (year,month,day)\n");
         scanf("%d",&d.year);
@@ -954,7 +957,7 @@ while (choice_management != 0)
     }
 }
 
-    /* free the memory of both lists before terminating */
+    /* free the memory of both lists*/
     node_patient *temp;
     node_appointement *temp1;
     while (head != NULL)
