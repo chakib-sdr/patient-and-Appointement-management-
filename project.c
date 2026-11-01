@@ -138,12 +138,10 @@ node_appointement *ADD_appointement(node_appointement *head,node_appointement *n
 
 /* displays all the appointements of the date sorted by time and returns how many were found */
 int search_appointement(node_appointement *head, date d) {
-    node_appointement *temp;
-    int count = 0, i, j;
-
+    node_appointement *temp,*temp1;
+    int count = 0,swap = 1;
     temp = head;
-
-    /* Count appointments on this date */
+    /* count appointement on a specific daate*/
     while (temp != NULL) {
         if (temp->info.appointment_date.year == d.year && temp->info.appointment_date.month == d.month && temp->info.appointment_date.day == d.day) {
             count++;
@@ -154,38 +152,28 @@ int search_appointement(node_appointement *head, date d) {
     if (count == 0)
         return 0;
 
-    node_appointement *arr[count];
-
-
+    temp1 = head->next;
     temp = head;
-    i = 0;
-
-    while (temp != NULL) {
-        if (temp->info.appointment_date.year == d.year && temp->info.appointment_date.month == d.month && temp->info.appointment_date.day == d.day) {
-            arr[i] = temp;
-            i++;
-        }
-        temp = temp->next;
-    }
-
-    /*sort by appointment time */
-    for (i = 0; i < count - 1; i++) {
-        for (j = 0; j < count - 1 - i; j++) {
-            int time1 = arr[j]->info.appointment_time.hour * 60 + arr[j]->info.appointment_time.min;
-            int time2 = arr[j+1]->info.appointment_time.hour * 60 + arr[j+1]->info.appointment_time.min;
-
-            if (time1 > time2) {
-                node_appointement *swap = arr[j];
-                arr[j] = arr[j+1];
-                arr[j+1] = swap;
+    while (temp1 != NULL)
+    {
+    while(swap){
+        swap = 0;
+            int time1 = temp->info.appointment_time.hour * 60+temp->info.appointment_time.min;
+            int time2 = temp1->info.appointment_time.hour * 60+temp1->info.appointment_time.min;
+            if(time1 > time2){
+                swap = 1;
+                temp->info.appointment_time.hour = temp1->info.appointment_time.hour;
+                temp->info.appointment_time.min = temp1->info.appointment_time.min;
             }
-        }
     }
-
-    /* Display appointments in chronological order */
-    for (i = 0; i < count; i++) {
-        temp = arr[i];
-
+    temp1 = temp1->next;
+    temp = temp->next;
+    }
+    
+    /* display the sorted appointments based only by time */
+    temp = head;
+    while (temp != NULL)
+    {
         printf("ID:%d\nPatient_id:%d\nDate: %d %d %d\nTime:%02d:%02d\nReason: %s\n\n",
                temp->info.id,
                temp->info.patient_id,
@@ -194,11 +182,12 @@ int search_appointement(node_appointement *head, date d) {
                temp->info.appointment_date.day,
                temp->info.appointment_time.hour,
                temp->info.appointment_time.min,
-               temp->info.reason);
+               temp->info.reason); 
+        temp = temp->next;
     }
-
     return count;
 }
+
 
 node_appointement *modify_appointement(node_appointement *head,int x){
     node_appointement *temp;
@@ -245,7 +234,6 @@ int check_appointement(node_appointement *head, appointment a){
     temp = head;
     while (temp != NULL)
     {
-
         if (temp->info.id != a.id &&
             temp->info.appointment_date.year  == a.appointment_date.year  &&
             temp->info.appointment_date.month == a.appointment_date.month &&
@@ -260,11 +248,11 @@ int check_appointement(node_appointement *head, appointment a){
     return 0;
     }
 
-
+/*this one sort based on days and times*/
 void sort_appointments(node_appointement *head1, int id)
 {
-    node_appointement *temp = head1;
-    int count = 0;
+    node_appointement *temp = head1,*temp1 = head1->next;
+    int count = 0,swap = 1;
     while (temp != NULL)
     {
         if (temp->info.patient_id == id)
@@ -278,37 +266,33 @@ void sort_appointments(node_appointement *head1, int id)
         return;
     }
 
-    node_appointement *arr[count];
     temp = head1;
-    int i = 0;
-    int j;
-    while (temp != NULL)
+    while (temp1 != NULL)
     {
-        if (temp->info.patient_id == id)
-        {
-            arr[i] = temp;
-            i++;
-        }
+    while (swap)
+    {
+            /*we multiply so its easy to compare ex (2026.1.5) will be 202615*/
+            int date1 = temp->info.appointment_date.year * 10000 + temp->info.appointment_date.month * 100 + temp->info.appointment_date.day;
+            int date2 = temp1->info.appointment_date.year * 10000 + temp1->info.appointment_date.month * 100 + temp1->info.appointment_date.day;
+            int time1 = temp->info.appointment_time.hour * 60 + temp->info.appointment_time.min;
+            int time2 = temp1->info.appointment_time.hour * 60 + temp1->info.appointment_time.min;
+
+            if (date1 >  date2)
+            {
+                temp->info.appointment_date.year = temp1->info.appointment_date.year;
+                temp->info.appointment_date.month = temp1->info.appointment_date.month;
+                temp->info.appointment_date.day = temp1->info.appointment_date.day;
+
+            }
+            if(date1 == date2 && time1 > time2){
+                temp->info.appointment_time.hour = temp1->info.appointment_time.hour;
+                temp->info.appointment_time.min = temp1->info.appointment_time.min;
+            }
+    }
+        temp1 = temp1->next;
         temp = temp->next;
     }
-    for (i = 0; i < count - 1; i++)
-    {
-        for (j = 0; j < count - 1; j++)
-        {
-            /*we multiply so its easy to compare ex (2026.1.5) will be 202615*/
-            int date1 = arr[j]->info.appointment_date.year * 10000 + arr[j]->info.appointment_date.month * 100 + arr[j]->info.appointment_date.day;
-            int date2 = arr[j+1]->info.appointment_date.year * 10000 + arr[j+1]->info.appointment_date.month * 100 + arr[j+1]->info.appointment_date.day;
-            int time1 = arr[j]->info.appointment_time.hour * 60 + arr[j]->info.appointment_time.min;
 
-            int time2 = arr[j+1]->info.appointment_time.hour * 60 + arr[j+1]->info.appointment_time.min;
-            if (date1 > date2 || (date1 == date2 && time1 > time2))
-            {
-                temp = arr[j];
-                arr[j] = arr[j+1];
-                arr[j+1] = temp;
-            }
-        }
-    }
 }
 
 
