@@ -139,6 +139,7 @@ node_appointement *ADD_appointement(node_appointement *head,node_appointement *n
 /* displays all the appointements of the date sorted by time and returns how many were found */
 int search_appointement(node_appointement *head, date d) {
     node_appointement *temp,*temp1;
+    time x;
     int count = 0,swap = 1;
     temp = head;
     /* count appointement on a specific daate*/
@@ -162,8 +163,13 @@ int search_appointement(node_appointement *head, date d) {
             int time2 = temp1->info.appointment_time.hour * 60+temp1->info.appointment_time.min;
             if(time1 > time2){
                 swap = 1;
+                x.hour = temp->info.appointment_time.hour;
+                x.min = temp->info.appointment_time.min;
                 temp->info.appointment_time.hour = temp1->info.appointment_time.hour;
                 temp->info.appointment_time.min = temp1->info.appointment_time.min;
+                temp1->info.appointment_time.hour = x.hour;
+                temp1->info.appointment_time.min = x.min;
+
             }
     }
     temp1 = temp1->next;
@@ -253,6 +259,7 @@ void sort_appointments(node_appointement *head1, int id)
 {
     node_appointement *temp = head1,*temp1 = head1->next;
     int count = 0,swap = 1;
+    date x; time y;
     while (temp != NULL)
     {
         if (temp->info.patient_id == id)
@@ -280,15 +287,34 @@ void sort_appointments(node_appointement *head1, int id)
             if (date1 >  date2)
             {
                 swap = 1;
+                x.year = temp->info.appointment_date.year;
+                x.month = temp->info.appointment_date.month;
+                x.day = temp->info.appointment_date.day;
+                y.hour = temp->info.appointment_time.hour;
+                y.min = temp->info.appointment_time.min;
+
                 temp->info.appointment_date.year = temp1->info.appointment_date.year;
                 temp->info.appointment_date.month = temp1->info.appointment_date.month;
                 temp->info.appointment_date.day = temp1->info.appointment_date.day;
+                temp->info.appointment_time.hour = temp1->info.appointment_time.hour;
+                temp->info.appointment_time.min = temp1->info.appointment_time.min;
 
+                temp1->info.appointment_date.year = x.year;
+                temp1->info.appointment_date.month = x.month;
+                temp1->info.appointment_date.day = x.day;
+                temp1->info.appointment_time.hour = y.hour;
+                temp1->info.appointment_time.min = y.min;
             }
             if(date1 == date2 && time1 > time2){
                 swap = 1;
+                y.hour = temp->info.appointment_time.hour;
+                y.min = temp->info.appointment_time.min;
+
                 temp->info.appointment_time.hour = temp1->info.appointment_time.hour;
                 temp->info.appointment_time.min = temp1->info.appointment_time.min;
+
+                temp1->info.appointment_time.hour = y.hour;
+                temp1->info.appointment_time.min = y.min;     
             }
     }
         temp1 = temp1->next;
