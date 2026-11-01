@@ -257,7 +257,6 @@ void sort_appointments(node_appointement *head1, int id)
     {
         if (temp->info.patient_id == id)
             count++;
-
         temp = temp->next;
     }
     if (count == 0)
@@ -271,6 +270,7 @@ void sort_appointments(node_appointement *head1, int id)
     {
     while (swap)
     {
+        swap = 0;
             /*we multiply so its easy to compare ex (2026.1.5) will be 202615*/
             int date1 = temp->info.appointment_date.year * 10000 + temp->info.appointment_date.month * 100 + temp->info.appointment_date.day;
             int date2 = temp1->info.appointment_date.year * 10000 + temp1->info.appointment_date.month * 100 + temp1->info.appointment_date.day;
@@ -279,12 +279,14 @@ void sort_appointments(node_appointement *head1, int id)
 
             if (date1 >  date2)
             {
+                swap = 1;
                 temp->info.appointment_date.year = temp1->info.appointment_date.year;
                 temp->info.appointment_date.month = temp1->info.appointment_date.month;
                 temp->info.appointment_date.day = temp1->info.appointment_date.day;
 
             }
             if(date1 == date2 && time1 > time2){
+                swap = 1;
                 temp->info.appointment_time.hour = temp1->info.appointment_time.hour;
                 temp->info.appointment_time.min = temp1->info.appointment_time.min;
             }
@@ -620,7 +622,9 @@ while (choice_management != 0)
             }
             if (newappointement->info.patient_id == 0)
             {
+                printf("======================================\n");
                 printf("Appointement canceled\n");
+                printf("======================================\n");
                 free(newappointement);
                 break;
             }
@@ -659,7 +663,9 @@ while (choice_management != 0)
             scanf(" %49[^\n]", newappointement->info.reason);
 
             if (check_appointement(head1, newappointement->info)) {
+            printf("======================================\n");
                 printf("This time slot is already booked\n");
+            printf("======================================\n");
                 free(newappointement);
                 continue;
                 }
@@ -826,16 +832,14 @@ while (choice_management != 0)
             while (temp != NULL)
             {
                 if(temp->info.patient_id == id){
-                    printf("ID: %d\n", temp->info.id);
+                    printf("ID: %d\n",temp->info.id);
                     printf("Date: %d/%d/%d\n",temp->info.appointment_date.day,temp->info.appointment_date.month,temp->info.appointment_date.year);
                     printf("Time: %02d:%02d\n",temp->info.appointment_time.hour,temp->info.appointment_time.min);
-                    printf("Reason: %s\n\n", temp->info.reason);
+                    printf("Reason: %s\n\n",temp->info.reason);
                 }
 
                 temp = temp->next;
             }
-            
-
         }
     }else{
         
