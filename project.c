@@ -138,46 +138,53 @@ node_appointement *ADD_appointement(node_appointement *head,node_appointement *n
 
 /* displays all the appointements of the date sorted by time and returns how many were found */
 int search_appointement(node_appointement *head, date d) {
-    node_appointement *temp,*temp1;
-    time x;
+    node_appointement *temp,*temp1,*h=NULL;
+    appointment x;
     int count = 0,swap = 1;
     temp = head;
     /* count appointement on a specific daate*/
+    /*creating a new list containning only the appointement of specific date to sort it later*/
     while (temp != NULL) {
         if (temp->info.appointment_date.year == d.year && temp->info.appointment_date.month == d.month && temp->info.appointment_date.day == d.day) {
             count++;
+        node_appointement *p = malloc(sizeof(node_appointement));
+        p->next = NULL;
+        p->info = temp->info;
+
+        if(h == NULL){
+            h = p;
+        }else{
+            p->next = h;
+            h = p;
         }
+            }
         temp = temp->next;
     }
 
     if (count == 0)
         return 0;
 
-    temp1 = head->next;
-    temp = head;
-    while (temp1 != NULL)
-    {
-    while(swap){
+    do {
         swap = 0;
+        temp = h;
+        temp1 = h->next;
+        while (temp1 != NULL)
+        {
             int time1 = temp->info.appointment_time.hour * 60+temp->info.appointment_time.min;
             int time2 = temp1->info.appointment_time.hour * 60+temp1->info.appointment_time.min;
             if(time1 > time2){
                 swap = 1;
-                x.hour = temp->info.appointment_time.hour;
-                x.min = temp->info.appointment_time.min;
-                temp->info.appointment_time.hour = temp1->info.appointment_time.hour;
-                temp->info.appointment_time.min = temp1->info.appointment_time.min;
-                temp1->info.appointment_time.hour = x.hour;
-                temp1->info.appointment_time.min = x.min;
-
+                x = temp->info;
+                temp->info = temp1->info;
+                temp1->info = x;
             }
-    }
-    temp1 = temp1->next;
-    temp = temp->next;
-    }
+            temp1 = temp1->next;
+            temp = temp->next;
+        }
+    } while (swap);
     
     /* display the sorted appointments based only by time */
-    temp = head;
+    temp = h;
     while (temp != NULL)
     {
         printf("ID:%d\nPatient_id:%d\nDate: %d %d %d\nTime:%02d:%02d\nReason: %s\n\n",
@@ -191,6 +198,15 @@ int search_appointement(node_appointement *head, date d) {
                temp->info.reason); 
         temp = temp->next;
     }
+    /*freeing the memory*/
+    temp = h;
+    while (temp != NULL)
+    {
+        temp = temp->next;
+        free(h);
+        h = temp;
+    }
+    
     return count;
 }
 
@@ -257,9 +273,12 @@ int check_appointement(node_appointement *head, appointment a){
 /*this one sort based on days and times*/
 void sort_appointments(node_appointement *head1, int id)
 {
+    if(head1 == NULL){
+        return;
+    }
     node_appointement *temp = head1,*temp1 = head1->next;
     int count = 0,swap = 1;
-    date x; time y;
+    appointment x;
     while (temp != NULL)
     {
         if (temp->info.patient_id == id)
@@ -273,53 +292,29 @@ void sort_appointments(node_appointement *head1, int id)
     }
 
     temp = head1;
-    while (temp1 != NULL)
-    {
-    while (swap)
-    {
+    do {
         swap = 0;
+        temp = head1;
+        temp1 = head1->next;
+        while (temp1 != NULL)
+        {
             /*we multiply so its easy to compare ex (2026.1.5) will be 202615*/
             int date1 = temp->info.appointment_date.year * 10000 + temp->info.appointment_date.month * 100 + temp->info.appointment_date.day;
             int date2 = temp1->info.appointment_date.year * 10000 + temp1->info.appointment_date.month * 100 + temp1->info.appointment_date.day;
             int time1 = temp->info.appointment_time.hour * 60 + temp->info.appointment_time.min;
             int time2 = temp1->info.appointment_time.hour * 60 + temp1->info.appointment_time.min;
 
-            if (date1 >  date2)
+            if (date1 > date2 || (date1 == date2 && time1 > time2))
             {
                 swap = 1;
-                x.year = temp->info.appointment_date.year;
-                x.month = temp->info.appointment_date.month;
-                x.day = temp->info.appointment_date.day;
-                y.hour = temp->info.appointment_time.hour;
-                y.min = temp->info.appointment_time.min;
-
-                temp->info.appointment_date.year = temp1->info.appointment_date.year;
-                temp->info.appointment_date.month = temp1->info.appointment_date.month;
-                temp->info.appointment_date.day = temp1->info.appointment_date.day;
-                temp->info.appointment_time.hour = temp1->info.appointment_time.hour;
-                temp->info.appointment_time.min = temp1->info.appointment_time.min;
-
-                temp1->info.appointment_date.year = x.year;
-                temp1->info.appointment_date.month = x.month;
-                temp1->info.appointment_date.day = x.day;
-                temp1->info.appointment_time.hour = y.hour;
-                temp1->info.appointment_time.min = y.min;
+                x = temp->info;
+                temp->info = temp1->info;
+                temp1->info = x;
             }
-            if(date1 == date2 && time1 > time2){
-                swap = 1;
-                y.hour = temp->info.appointment_time.hour;
-                y.min = temp->info.appointment_time.min;
-
-                temp->info.appointment_time.hour = temp1->info.appointment_time.hour;
-                temp->info.appointment_time.min = temp1->info.appointment_time.min;
-
-                temp1->info.appointment_time.hour = y.hour;
-                temp1->info.appointment_time.min = y.min;     
-            }
-    }
-        temp1 = temp1->next;
-        temp = temp->next;
-    }
+            temp1 = temp1->next;
+            temp = temp->next;
+        }
+    } while (swap);
 
 }
 
@@ -547,7 +542,7 @@ while (choice_management != 0)
             while (strlen(temp->info.phone)!=10)
             {
                 printf("Enter a Valid phone number\n");
-                scanf("%12s",temp->info.phone);               
+                scanf("%10s",temp->info.phone);               
             }
             printf("======================================\n");
             printf("Phone number modified\n");
